@@ -1,0 +1,10 @@
+[(array([[2, 8, 3],
+       [1, 0, 4],
+       [7, 6, 5]]), 3), 
+(array([[2, 8, 3],
+       [1, 6, 4],
+       [0, 7, 5]]), 5), 
+(array([[2, 8, 3],
+       [1, 6, 4],
+       [7, 5, 0]]), 5)]
+This puzzle has no solution. Please stop trying to fool me.
