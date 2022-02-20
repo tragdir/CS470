@@ -158,8 +158,6 @@ def a_star(start, goal, expand):
     # initialize the two arrays
     open_cells =  [start]
     closed_cells = []
-    ancestors = []
-    next_node = [start]
     lowest = 100000
     target_maximum = 100001
     # while there are unexplored nodes, check for solution
@@ -167,12 +165,12 @@ def a_star(start, goal, expand):
         node = open_cells.pop()
         # if this current node is the solution, return with the path
         if np.array_equal(node, goal):
-            ancestors.append(node)
-            return ancestors
+            closed_cells.append(node)
+            return closed_cells
         
         # expand to all possible moves
         unordered_list = expand(node, goal)
-        closed_cells.append(node)
+        # closed_cells.append(node)
         
         # for every move, make sure that it wasn't checked already, then if it wasn't add it to M.
         # sort the unordered list of possible moves
@@ -192,7 +190,7 @@ def a_star(start, goal, expand):
         if target_maximum <= lowest:
             break
         target_maximum = lowest
-        ancestors.append(open_cells[-1])
+        closed_cells.append(open_cells[-1])
     # return with no solution
     return []
 
@@ -224,4 +222,4 @@ def slide_puzzle_solver(start, goal):
             print(space + '|')
             print(space + 'V')
 
-slide_puzzle_solver(example_2_start, example_2_goal)
+slide_puzzle_solver(example_1_start, example_1_goal)
