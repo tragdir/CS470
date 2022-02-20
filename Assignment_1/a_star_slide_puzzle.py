@@ -104,60 +104,103 @@ def slide_expand_improved(state, goal):
     
     return node_list
   
-def a_star(start, goal, expand):     
-    ancestors = []
-    ancestors.append(start)
-    open_cells = []
-    closed_cells = []
-    open_cells.append(start)
+# def a_star(start, goal, expand):     
+#     ancestors = []
+#     ancestors.append(start)
+#     open_cells = []
+#     closed_cells = []
+#     open_cells.append(start)
 
-    # while there is open cells to look into
-    while open_cells:
-        lowest = 100000
-        # get a list of the possible moves
-        node_list = expand(open_cells.pop(), goal)
+#     # while there is open cells to look into
+#     while open_cells:
+#         lowest = 100000
+#         # get a list of the possible moves
+#         node_list = expand(open_cells.pop(), goal)
         
-        # for each possible move, check the h-value to find the first lowest
-        for node in node_list:
-            (state, h_value) = node
-            # if this move would be the goal, return the move and the ancestors to that move
-            if h_value == 0:
-                ancestors.append(state)
-                return ancestors
+#         # for each possible move, check the h-value to find the first lowest
+#         for node in node_list:
+#             (state, h_value) = node
+#             # if this move would be the goal, return the move and the ancestors to that move
+#             if h_value == 0:
+#                 ancestors.append(state)
+#                 return ancestors
             
-            # otherwise find the lowest h-value
+#             # otherwise find the lowest h-value
             
-            # this is for the first iteration, when closed_cells is empty
-            if len(closed_cells) == 0:
-                if lowest > h_value:
-                    lowest = h_value
-                    next_node = state
-                    continue
+#             # this is for the first iteration, when closed_cells is empty
+#             if len(closed_cells) == 0:
+#                 if lowest > h_value:
+#                     lowest = h_value
+#                     next_node = state
+#                     continue
             
-            # this is for every other iteration of the loop, when closed_cells has something
-            for closed_cell in closed_cells:
-                if lowest > h_value:
-                   lowest = h_value
-                   next_node = state
-                elif np.array_equal(closed_cell, state):
-                    continue
-                break
+#             # this is for every other iteration of the loop, when closed_cells has something
+#             for closed_cell in closed_cells:
+#                 if lowest > h_value:
+#                    lowest = h_value
+#                    next_node = state
+#                 elif np.array_equal(closed_cell, state):
+#                     continue
+#                 break
         
-        # otherwise add the next move to open_cells and closed_cells to loop
-        open_cells.append(next_node)   # this will get popped in the next iteration of the loop
-        ancestors.append(next_node)    # this is going to add to the return value if there is a solution
-        closed_cells.append(next_node) # this prevents looping
+#         # otherwise add the next move to open_cells and closed_cells to loop
+#         open_cells.append(next_node)   # this will get popped in the next iteration of the loop
+#         ancestors.append(next_node)    # this is going to add to the return value if there is a solution
+#         closed_cells.append(next_node) # this prevents looping
         
     
-    # exit with no solution
-    return []
+#     # exit with no solution
+#     return []
 
+# attempt 2
+def a_star(start, goal, expand):
+    
+    # initialize the two arrays
+    open_cells =  [start]
+    closed_cells = []
+    ancestors = []
+    next_node = [start]
+    lowest = 100000
+    target_maximum = 100001
+    # while there are unexplored nodes, check for solution
+    while open_cells:
+        node = open_cells.pop()
+        # if this current node is the solution, return with the path
+        if np.array_equal(node, goal):
+            ancestors.append(node)
+            return ancestors
+        
+        # expand to all possible moves
+        unordered_list = expand(node, goal)
+        closed_cells.append(node)
+        
+        # for every move, make sure that it wasn't checked already, then if it wasn't add it to M.
+        # sort the unordered list of possible moves
+        
+        ordered_list = []
+        for state, h_value in unordered_list:
+            if h_value < lowest:
+                lowest = h_value
+                ordered_list.append(state)
+            else:
+                ordered_list.insert(0, state)
+        
+        # check if that possible move has been a part of the opened or closed list, is so, skip it.\
+        while ordered_list:
+            open_cells.append(ordered_list.pop(0))
+        
+        if target_maximum <= lowest:
+            break
+        target_maximum = lowest
+        ancestors.append(open_cells[-1])
+    # return with no solution
+    return []
 
 # Find and print a solution for a given slide puzzle, i.e., the states we need to go through 
 # in order to get from the start state to the goal state.
 def slide_puzzle_solver(start, goal):
-    solution = a_star(start, goal, slide_expand)
-    # solution = a_star(start, goal, slide_expand_improved)
+    # solution = a_star(start, goal, slide_expand)
+    solution = a_star(start, goal, slide_expand_improved)
     if len(solution) == 0:
         print('This puzzle has no solution. Please stop trying to fool me.')
         return
@@ -181,4 +224,4 @@ def slide_puzzle_solver(start, goal):
             print(space + '|')
             print(space + 'V')
 
-slide_puzzle_solver(example_1_start, example_1_goal)
+slide_puzzle_solver(example_2_start, example_2_goal)
