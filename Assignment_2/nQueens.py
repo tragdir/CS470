@@ -6,7 +6,7 @@ class nQueens:
     def __init__(self, n):
         self.n = n
         self.assignment = [-1] * n  # each element is the row index for corresponding column, -1 means no assignment yet
-        self.domain = [list(range(n)) for i in range(n)]  # available values (rows) for each column (variable)
+        self.domain = [list(range(n)) for _ in range(n)]  # available values (rows) for each column (variable)
         self.unassigned_columns = [i for i in range(n)]  # none of the columns are assigned yet
         self.backtrack_counter = 0
 
@@ -38,8 +38,12 @@ class nQueens:
         Finds and returns the variable with the fewest legal values
         :return: Variable with the least amount of legal values
         """
-
-        return self.unassigned_columns[0]  # replace this with the minimum-remaining-values heuristic
+        
+        lowest = 0 # this is the index of the lowest domain variable
+        for index in self.unassigned_columns:
+            if len(self.domain[index]) < len(self.domain[lowest]):
+                lowest = index
+        return self.unassigned_columns[lowest]
 
 
 
@@ -60,8 +64,9 @@ class nQueens:
         :param var: Current column to check
         :return: Updated domain
         """
-
-        # Fill in the body
+        queue = copy.copy(self.unassigned_columns)
+        while not queue == []:
+            pass
 
         return []
 
@@ -78,7 +83,7 @@ class nQueens:
 
         # Select the next unassigned column
         var = self.select_next_variable()
-
+        
         # Iterate through values for var
         for val in self.domain[var]:
             if self.is_consistent(var, val):
@@ -104,6 +109,15 @@ class nQueens:
 
 
         self.backtrack_counter += 1
+        
+        if len(self.unassigned_columns) == 0:
+            return self.assignment
+        
+        # find the next variable
+        var = self.select_next_variable_improved()
+        
+        
+        
 
         # Fill in the body
         return []
