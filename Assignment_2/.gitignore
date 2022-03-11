@@ -1,0 +1,3 @@
+# ignore all text files (used for testing only)
+
+*.txt
