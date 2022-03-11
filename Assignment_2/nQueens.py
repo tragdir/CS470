@@ -40,9 +40,9 @@ class nQueens:
         """
         
         lowest = 0 # this is the index of the lowest domain variable
-        for index, _ in enumerate(self.unassigned_columns):
+        for index, var in enumerate(self.unassigned_columns):
             
-            if len(self.domain[index]) < len(self.domain[lowest]):
+            if len(self.domain[var]) < len(self.domain[lowest]):
                 lowest = index
         return self.unassigned_columns[lowest]
 
@@ -54,14 +54,15 @@ class nQueens:
         :param var: Current column to check
         :return: Updated domain
         """
-        possible = copy.copy(self.domain[var])
+        possible = [i for i in range(self.n)]
         
         for val in possible:
             if val in self.assignment:
                 possible.remove(val)
         
+        self.domain[var] = possible
         
-        return possible
+        return self.domain[var]
         
 
     def ac3(self, var):
