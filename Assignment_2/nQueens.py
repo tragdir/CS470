@@ -40,7 +40,8 @@ class nQueens:
         """
         
         lowest = 0 # this is the index of the lowest domain variable
-        for index in self.unassigned_columns:
+        for index, _ in enumerate(self.unassigned_columns):
+            
             if len(self.domain[index]) < len(self.domain[lowest]):
                 lowest = index
         return self.unassigned_columns[lowest]
@@ -53,10 +54,15 @@ class nQueens:
         :param var: Current column to check
         :return: Updated domain
         """
-
-        # Fill in the body
-
-        return []
+        possible = copy.copy(self.domain[var])
+        
+        for val in possible:
+            if val in self.assignment:
+                possible.remove(val)
+        
+        
+        return possible
+        
 
     def ac3(self, var):
         """
@@ -64,9 +70,6 @@ class nQueens:
         :param var: Current column to check
         :return: Updated domain
         """
-        queue = copy.copy(self.unassigned_columns)
-        while not queue == []:
-            pass
 
         return []
 
@@ -110,25 +113,33 @@ class nQueens:
 
         self.backtrack_counter += 1
         
+        
         if len(self.unassigned_columns) == 0:
             return self.assignment
         
-        # find the next variable
         var = self.select_next_variable_improved()
+        inferences = inference(var)
         
+        for val in inferences:
+            if self.is_consistent(var, val):
+                self.assignment[var] = val
+                self.unassigned_columns.remove(var)
+                
+                result = self.backtrack_improved(inference)
+                if result:
+                    return result
+                
+                self.assignment[var] = -1
+                self.unassigned_columns.append(var)
+                # self.domain[var].append(val)
         
-        
-
         # Fill in the body
         return []
 
-
-
-
     def solve_and_print(self):
 
-        solution = self.backtrack()
-        # solution = self.backtrack_improved(self.forward_checking)
+        # solution = self.backtrack()
+        solution = self.backtrack_improved(self.forward_checking)
         # solution = self.backtrack_improved(self.ac3)
 
         if solution.count(-1) == len(solution):
